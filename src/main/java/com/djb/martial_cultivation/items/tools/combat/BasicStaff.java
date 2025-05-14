@@ -1,19 +1,17 @@
 package com.djb.martial_cultivation.items.tools.combat;
 
-import com.djb.martial_cultivation.data.ModTags;
+import com.djb.martial_cultivation.Main;
+import com.djb.martial_cultivation.capabilities.Cultivator;
+import com.djb.martial_cultivation.capabilities.CultivatorCapabilityProvider;
+import com.djb.martial_cultivation.exceptions.NotEnoughQiException;
 import com.djb.martial_cultivation.helpers.InventoryChangeTriggerHelpers;
 import com.djb.martial_cultivation.items.ModItems;
-import net.minecraft.advancements.criterion.EntityPredicate;
-import net.minecraft.advancements.criterion.InventoryChangeTrigger;
-import net.minecraft.advancements.criterion.ItemPredicate;
-import net.minecraft.advancements.criterion.MinMaxBounds;
-import net.minecraft.data.RecipeProvider;
 import net.minecraft.data.ShapedRecipeBuilder;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
-
-import net.minecraft.tags.ITag;
-import net.minecraft.util.IItemProvider;
-import net.minecraftforge.common.Tags;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class BasicStaff extends SwordItem {
 	public static final String name = "basic_staff";

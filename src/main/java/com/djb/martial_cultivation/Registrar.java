@@ -32,12 +32,4 @@ public class Registrar {
 
 		Main.LOGGER.debug("Done registering items and blocks.");
 	}
-
-	public static void registerCapabilities() {
-		Main.LOGGER.debug("Registering capabilities.");
-
-		ModCapabilities.register();
-
-		Main.LOGGER.debug("Finished registering capabilities.");
-	}
 }

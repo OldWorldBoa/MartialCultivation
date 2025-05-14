@@ -12,9 +12,14 @@ public class FoundationCultivator implements Cultivator, INBTSerializable<Compou
     public void storeQi(int qi) {
         this.storedQi += qi;
 
-        if (this.storedQi > this.maxQi) {
-            this.storedQi = this.maxQi;
-        }
+        this.qiChangeInvariant();
+    }
+
+    @Override
+    public void setQi(int qi) {
+        this.storedQi = qi;
+
+        this.qiChangeInvariant();
     }
 
     @Override
@@ -34,6 +39,17 @@ public class FoundationCultivator implements Cultivator, INBTSerializable<Compou
     @Override
     public int getStoredQi() {
         return this.storedQi;
+    }
+
+    private void qiChangeInvariant() {
+        if (this.storedQi > this.maxQi) {
+            this.storedQi = this.maxQi;
+        }
+    }
+
+    @Override
+    public int getMaxQi() {
+        return this.maxQi;
     }
 
     @Override

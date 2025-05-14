@@ -3,10 +3,13 @@ package com.djb.martial_cultivation.events;
 import com.djb.martial_cultivation.Main;
 import com.djb.martial_cultivation.capabilities.Cultivator;
 import com.djb.martial_cultivation.capabilities.CultivatorCapabilityProvider;
+import com.djb.martial_cultivation.data.network.messages.QiAmountChanged;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.network.NetworkDirection;
 
 @Mod.EventBusSubscriber
 public class CultivationEvents {
@@ -27,7 +30,12 @@ public class CultivationEvents {
 
                     cultivator.storeQi(5);
 
-                    Main.LOGGER.debug("Storing qi for " + player.getScoreboardName());
+                    Main.NETWORK_CHANNEL.sendTo(
+                        new QiAmountChanged(cultivator.getStoredQi()),
+                        Minecraft.getInstance().getConnection().getNetworkManager(),
+                        NetworkDirection.PLAY_TO_CLIENT);
+
+                    Main.LOGGER.debug("Storing qi for " + player.getScoreboardName() + ". Current qi:" + cultivator.getStoredQi());
                 } catch (Exception e) {
                     Main.LOGGER.debug("Error storing qi for " + player.getScoreboardName());
                 }
