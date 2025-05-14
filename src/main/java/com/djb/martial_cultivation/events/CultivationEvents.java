@@ -17,16 +17,20 @@ public class CultivationEvents {
         if (event.phase == TickEvent.Phase.START) {
             tickCount += 1;
 
-            if (tickCount % 12 == 0) {
+            if (tickCount % 20 == 0) {
                 PlayerEntity player = event.player;
 
-                Cultivator cultivator = player
-                        .getCapability(CultivatorCapabilityProvider.capability)
-                        .orElseThrow(IllegalStateException::new);
+                try {
+                    Cultivator cultivator = player
+                            .getCapability(CultivatorCapabilityProvider.capability)
+                            .orElseThrow(IllegalStateException::new);
 
-                cultivator.storeQi(5);
+                    cultivator.storeQi(5);
 
-                Main.LOGGER.debug("Storing qi for " + player.getScoreboardName());
+                    Main.LOGGER.debug("Storing qi for " + player.getScoreboardName());
+                } catch (Exception e) {
+                    Main.LOGGER.debug("Error storing qi for " + player.getScoreboardName());
+                }
             }
         }
     }

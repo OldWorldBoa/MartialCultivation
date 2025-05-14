@@ -17,6 +17,8 @@ public class CultivatorStorage implements Capability.IStorage<Cultivator> {
 
     @Override
     public void readNBT(Capability<Cultivator> capability, Cultivator instance, Direction side, INBT nbt) {
-        ((INBTSerializable<CompoundNBT>)instance).deserializeNBT((CompoundNBT) nbt);
+        if (nbt != null) {
+            ((INBTSerializable<CompoundNBT>)instance).deserializeNBT((CompoundNBT) nbt);
+        }
     }
 }

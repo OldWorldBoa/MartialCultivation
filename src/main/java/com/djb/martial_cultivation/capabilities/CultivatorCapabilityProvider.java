@@ -28,11 +28,22 @@ public class CultivatorCapabilityProvider implements ICapabilitySerializable<INB
 
     @Override
     public INBT serializeNBT() {
-        return capability.getStorage().writeNBT(capability, this.instance.orElseThrow(() -> new IllegalArgumentException("LazyOptional must not be empty!")), null);
+        return capability.getStorage().writeNBT(
+            capability,
+            this.instance.orElseThrow(
+                () -> new IllegalArgumentException("LazyOptional must not be empty!")),
+            null);
     }
 
     @Override
     public void deserializeNBT(INBT nbt) {
-        capability.getStorage().readNBT(capability, this.instance.orElseThrow(() -> new IllegalArgumentException("LazyOptional must not be empty!")), null, nbt);
+        if (nbt != null) {
+            capability.getStorage().readNBT(
+                capability,
+                this.instance.orElseThrow(
+                        () -> new IllegalArgumentException("LazyOptional must not be empty!")),
+                null,
+                nbt);
+        }
     }
 }

@@ -43,12 +43,14 @@ public class FoundationCultivator implements Cultivator, INBTSerializable<Compou
         nbt.putInt("storedQi", this.storedQi);
         nbt.putInt("maxQi", this.maxQi);
 
-        return null;
+        return nbt;
     }
 
     @Override
     public void deserializeNBT(CompoundNBT nbt) {
-        this.storedQi = nbt.getInt("storedQi");
-        this.maxQi = nbt.getInt("maxQi");
+        if (nbt != null) {
+            this.storedQi = nbt.getInt("storedQi");
+            this.maxQi = nbt.getInt("maxQi");
+        }
     }
 }
