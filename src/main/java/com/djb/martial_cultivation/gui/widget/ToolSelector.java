@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class ToolSelector extends Widget {
-    private final ResourceLocation black_pixel = new ResourceLocation(Main.MOD_ID, "textures/gui/black_pixel.png");
+    private static final ResourceLocation black_pixel = new ResourceLocation(Main.MOD_ID, "textures/black_pixel.png");
 
     private final List<Item> tools = new ArrayList<Item>() {
         { add(ModItems.BASIC_STAFF.get()); }
@@ -26,12 +26,12 @@ public class ToolSelector extends Widget {
         { add(Items.STONE_HOE); }
     };
 
-    private Minecraft mc;
-    private Consumer<Item> itemConsumer;
+    private final Minecraft mc;
+    private final Consumer<Item> itemConsumer;
 
-    private int toolHeight = 18;
-    private int toolWidth = 18;
-    private int padding = 3;
+    private final int toolHeight = 18;
+    private final int toolWidth = 18;
+    private final int padding = 3;
 
     public ToolSelector(Minecraft mc, int width, int height, int top, int left, Consumer<Item> itemConsumer) {
         super(left, top, width, height, new StringTextComponent(""));

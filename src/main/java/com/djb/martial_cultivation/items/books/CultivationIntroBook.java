@@ -1,6 +1,7 @@
 package com.djb.martial_cultivation.items.books;
 
 import com.djb.martial_cultivation.capabilities.Cultivator;
+import com.djb.martial_cultivation.capabilities.skills.base.BasicQiEnhanceSkill;
 import com.djb.martial_cultivation.data.ModTags;
 import com.djb.martial_cultivation.gui.screen.CultivationIntroBookScreen;
 import com.djb.martial_cultivation.helpers.InventoryChangeTriggerHelpers;
@@ -37,6 +38,7 @@ public class CultivationIntroBook extends BookItem {
 
         Cultivator cultivator = Cultivator.getCultivatorFrom(playerIn);
         cultivator.setEnabled(true);
+        cultivator.learnSkill(new BasicQiEnhanceSkill());
 
         return super.onItemRightClick(worldIn, playerIn, handIn);
     }

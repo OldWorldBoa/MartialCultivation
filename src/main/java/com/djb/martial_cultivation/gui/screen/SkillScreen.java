@@ -1,11 +1,11 @@
 package com.djb.martial_cultivation.gui.screen;
 
 import com.djb.martial_cultivation.Main;
+import com.djb.martial_cultivation.gui.widget.SkillSelector;
 import com.djb.martial_cultivation.gui.widget.ToolSelector;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -17,7 +17,7 @@ import org.lwjgl.opengl.GL11;
 public class SkillScreen extends Screen {
     private static final ITextComponent title = new StringTextComponent("Skill Screen");
     private static final ResourceLocation skill_screen = new ResourceLocation(Main.MOD_ID, "textures/gui/skill_screen.png");
-    private static final ResourceLocation black_pixel = new ResourceLocation(Main.MOD_ID, "textures/gui/black_pixel.png");
+    private static final ResourceLocation black_pixel = new ResourceLocation(Main.MOD_ID, "textures/black_pixel.png");
 
     private final int screenWidth = 176;
     private final int screenHeight = 166;
@@ -25,7 +25,7 @@ public class SkillScreen extends Screen {
     private PlayerEntity player;
     private Item selectedTool;
     private ToolSelector toolSelector;
-    private Widget skillSelector;
+    private SkillSelector skillSelector;
 
     private int screenTop = 0;
     private int screenLeft = 0;
@@ -51,7 +51,16 @@ public class SkillScreen extends Screen {
                 this.screenLeft + (this.screenWidth / 2) - 11,
                 this::selectTool);
 
+        this.skillSelector = new SkillSelector(
+                this.minecraft,
+                this.screenLeft + 15,
+                this.screenTop + 100,
+                100,
+                88,
+                this.player);
+
         this.addListener(this.toolSelector);
+        this.addListener(this.skillSelector);
     }
 
     private void selectTool(Item tool) {
@@ -78,6 +87,7 @@ public class SkillScreen extends Screen {
                 this.screenTop + 13);
 
         this.toolSelector.render(matrixStack, mouseX, mouseY, partialTicks);
+        this.skillSelector.render(matrixStack, mouseX, mouseY, partialTicks);
 
         super.render(matrixStack, mouseX, mouseY, partialTicks);
     }

@@ -1,7 +1,11 @@
 package com.djb.martial_cultivation.capabilities;
 
-import com.djb.martial_cultivation.capabilities.skills.base.CultivationSkill;
+import com.djb.martial_cultivation.Main;
+import com.djb.martial_cultivation.capabilities.skills.CultivationSkill;
+import com.djb.martial_cultivation.capabilities.skills.CultivationSkillFactory;
 import com.djb.martial_cultivation.exceptions.NotEnoughQiException;
+import com.djb.martial_cultivation.exceptions.SkillNotImplementedException;
+import com.djb.martial_cultivation.helpers.StringHelpers;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.INBTSerializable;
 
@@ -13,7 +17,7 @@ public class FoundationCultivator implements Cultivator, INBTSerializable<Compou
     private int maxQi = 100;
     private boolean isEnabled = false;
 
-    private ArrayList<CultivationSkill> cultivationAttributeList = new ArrayList();
+    private ArrayList<CultivationSkill> learnedSkills = new ArrayList<>();
 
     @Override
     public void loadCultivator(Cultivator savedCultivator) {
@@ -68,6 +72,16 @@ public class FoundationCultivator implements Cultivator, INBTSerializable<Compou
     }
 
     @Override
+    public void learnSkill(CultivationSkill skill) {
+        this.learnedSkills.add(skill);
+    }
+
+    @Override
+    public ArrayList<CultivationSkill> getSkills() {
+        return this.learnedSkills;
+    }
+
+    @Override
     public void setEnabled(boolean enabled) {
         this.isEnabled = enabled;
     }
@@ -85,6 +99,12 @@ public class FoundationCultivator implements Cultivator, INBTSerializable<Compou
         nbt.putInt("maxQi", this.maxQi);
         nbt.putBoolean("isEnabled", this.isEnabled);
 
+        int i = 0;
+        for (CultivationSkill skill : learnedSkills) {
+            nbt.putString("skillId_" + i, skill.getSkillId());
+            i++;
+        }
+
         return nbt;
     }
 
@@ -94,6 +114,19 @@ public class FoundationCultivator implements Cultivator, INBTSerializable<Compou
             this.storedQi = nbt.getInt("storedQi");
             this.maxQi = nbt.getInt("maxQi");
             this.isEnabled = nbt.getBoolean("isEnabled");
+
+            int i = 0;
+            String skillId = nbt.getString("skillId_" + i);
+            while(!StringHelpers.isNullOrWhitespace(skillId)) {
+                try {
+                    this.learnedSkills.add(CultivationSkillFactory.create(skillId));
+                } catch (SkillNotImplementedException e) {
+                    Main.LOGGER.debug(e.getMessage());
+                }
+
+                i++;
+                skillId = nbt.getString("skillId_" + i);
+            }
         }
     }
 }
