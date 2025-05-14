@@ -1,29 +1,41 @@
 package com.djb.martial_cultivation.capabilities;
 
-import com.djb.martial_cultivation.Main;
 import com.djb.martial_cultivation.capabilities.skills.CultivationSkill;
-import com.djb.martial_cultivation.capabilities.skills.CultivationSkillFactory;
+import com.djb.martial_cultivation.capabilities.skills.ToolSkillGroup;
+import com.djb.martial_cultivation.capabilities.skills.ToolSkillSettings;
 import com.djb.martial_cultivation.exceptions.NotEnoughQiException;
-import com.djb.martial_cultivation.exceptions.SkillNotImplementedException;
-import com.djb.martial_cultivation.helpers.StringHelpers;
+import com.djb.martial_cultivation.helpers.ListHelpers;
+import com.djb.martial_cultivation.helpers.SerializableConverter;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 public class FoundationCultivator implements Cultivator, INBTSerializable<CompoundNBT>, Serializable {
     private int storedQi = 0;
     private int maxQi = 100;
     private boolean isEnabled = false;
 
-    private ArrayList<CultivationSkill> learnedSkills = new ArrayList<>();
+    private final ArrayList<CultivationSkill> learnedSkills;
+    private final ArrayList<ToolSkillSettings> toolSkillSettings;
+
+    public FoundationCultivator() {
+        this.learnedSkills = new ArrayList<>();
+        this.toolSkillSettings = new ArrayList<>();
+    }
 
     @Override
     public void loadCultivator(Cultivator savedCultivator) {
         this.storedQi = savedCultivator.getStoredQi();
         this.maxQi = savedCultivator.getMaxQi();
         this.isEnabled = savedCultivator.isEnabled();
+        this.learnedSkills.addAll(ListHelpers.getDistinctFrom(savedCultivator.getSkills(), CultivationSkill::getSkillId));
+
+        if(savedCultivator.getAllToolSkillSettings() != null) {
+            this.toolSkillSettings.addAll(savedCultivator.getAllToolSkillSettings());
+        }
     }
 
     @Override
@@ -73,12 +85,38 @@ public class FoundationCultivator implements Cultivator, INBTSerializable<Compou
 
     @Override
     public void learnSkill(CultivationSkill skill) {
-        this.learnedSkills.add(skill);
+        if (!this.learnedSkills.stream().anyMatch(x -> x.getSkillId() == skill.getSkillId())) {
+            this.learnedSkills.add(skill);
+        }
+    }
+
+    @Override
+    public void setToolSkillSettings(ToolSkillSettings toolSkillSettings) {
+        this.toolSkillSettings.removeIf((x) -> x.toolSkillGroup == toolSkillSettings.toolSkillGroup);
+        this.toolSkillSettings.add(toolSkillSettings);
     }
 
     @Override
     public ArrayList<CultivationSkill> getSkills() {
         return this.learnedSkills;
+    }
+
+    @Override
+    public ArrayList<ToolSkillSettings> getAllToolSkillSettings() {
+        return this.toolSkillSettings;
+    }
+
+    @Override
+    public ToolSkillSettings getToolSkillSettings(ToolSkillGroup group) {
+        if (this.toolSkillSettings.stream().noneMatch(x -> x.toolSkillGroup == group)) {
+            ToolSkillSettings newToolSkillSettings = new ToolSkillSettings();
+            newToolSkillSettings.toolSkillGroup = group;
+            this.toolSkillSettings.add(newToolSkillSettings);
+
+            return newToolSkillSettings;
+        }
+
+        return toolSkillSettings.stream().filter(x -> x.toolSkillGroup == group).findFirst().get();
     }
 
     @Override
@@ -98,12 +136,8 @@ public class FoundationCultivator implements Cultivator, INBTSerializable<Compou
         nbt.putInt("storedQi", this.storedQi);
         nbt.putInt("maxQi", this.maxQi);
         nbt.putBoolean("isEnabled", this.isEnabled);
-
-        int i = 0;
-        for (CultivationSkill skill : learnedSkills) {
-            nbt.putString("skillId_" + i, skill.getSkillId());
-            i++;
-        }
+        nbt.putString("toolSkillSettings", SerializableConverter.Serialize(this.toolSkillSettings));
+        nbt.putString("learnedSkills", SerializableConverter.Serialize(this.learnedSkills));
 
         return nbt;
     }
@@ -115,17 +149,14 @@ public class FoundationCultivator implements Cultivator, INBTSerializable<Compou
             this.maxQi = nbt.getInt("maxQi");
             this.isEnabled = nbt.getBoolean("isEnabled");
 
-            int i = 0;
-            String skillId = nbt.getString("skillId_" + i);
-            while(!StringHelpers.isNullOrWhitespace(skillId)) {
-                try {
-                    this.learnedSkills.add(CultivationSkillFactory.create(skillId));
-                } catch (SkillNotImplementedException e) {
-                    Main.LOGGER.debug(e.getMessage());
-                }
+            List<ToolSkillSettings> toolSkillSettings = SerializableConverter.Deserialize(nbt.getString("toolSkillSettings"));
+            if (toolSkillSettings != null) {
+                this.toolSkillSettings.addAll(toolSkillSettings);
+            }
 
-                i++;
-                skillId = nbt.getString("skillId_" + i);
+            List<CultivationSkill> skills = SerializableConverter.Deserialize(nbt.getString("learnedSkills"));
+            if (skills != null) {
+                this.learnedSkills.addAll(skills);
             }
         }
     }

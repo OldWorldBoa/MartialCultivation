@@ -4,6 +4,7 @@ import com.djb.martial_cultivation.Main;
 import com.djb.martial_cultivation.capabilities.Cultivator;
 import com.djb.martial_cultivation.network.messages.LoadCultivator;
 import com.djb.martial_cultivation.network.messages.QiAmountChanged;
+import com.djb.martial_cultivation.network.messages.SaveCultivator;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.event.TickEvent;
@@ -16,6 +17,14 @@ import net.minecraftforge.fml.network.PacketDistributor;
 @Mod.EventBusSubscriber
 public class CultivationEvents {
     private static int tickCount = 0;
+
+    @SubscribeEvent
+    public static void saveCultivator(PlayerEvent.PlayerLoggedOutEvent event) {
+        PlayerEntity player = event.getPlayer();
+        Cultivator cultivator = Cultivator.getCultivatorFrom(player);
+
+        Main.NETWORK_CHANNEL.sendToServer(new SaveCultivator(player.getEntityId(), cultivator));
+    }
 
     @SubscribeEvent
     public static void loadCultivator(PlayerEvent.PlayerLoggedInEvent event) {

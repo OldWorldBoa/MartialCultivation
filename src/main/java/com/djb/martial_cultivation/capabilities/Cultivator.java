@@ -1,6 +1,8 @@
 package com.djb.martial_cultivation.capabilities;
 
 import com.djb.martial_cultivation.capabilities.skills.CultivationSkill;
+import com.djb.martial_cultivation.capabilities.skills.ToolSkillGroup;
+import com.djb.martial_cultivation.capabilities.skills.ToolSkillSettings;
 import com.djb.martial_cultivation.exceptions.NotEnoughQiException;
 import net.minecraft.entity.player.PlayerEntity;
 
@@ -26,6 +28,9 @@ public interface Cultivator {
 
     void learnSkill(CultivationSkill skill);
     ArrayList<CultivationSkill> getSkills();
+    void setToolSkillSettings(ToolSkillSettings toolSkillSettings);
+    ArrayList<ToolSkillSettings> getAllToolSkillSettings();
+    ToolSkillSettings getToolSkillSettings(ToolSkillGroup group);
 
     void setEnabled(boolean enabled);
     boolean isEnabled();

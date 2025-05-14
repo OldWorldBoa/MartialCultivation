@@ -6,9 +6,10 @@ import com.djb.martial_cultivation.capabilities.skills.CultivationSkillSubType;
 import com.djb.martial_cultivation.capabilities.skills.CultivationSkillType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 
 public class BasicQiEnhanceSkill extends CultivationSkill {
-    private final ResourceLocation textureLocation = new ResourceLocation(Main.MOD_ID, "textures/skill/" + this.skillId + ".png");
     public static final String skillId = "basic_qi_enhance_skill";
 
     public BasicQiEnhanceSkill() {
@@ -34,11 +35,16 @@ public class BasicQiEnhanceSkill extends CultivationSkill {
 
     @Override
     public ResourceLocation getTextureLocation() {
-        return this.textureLocation;
+        return new ResourceLocation(Main.MOD_ID, "textures/skill/" + this.skillId + ".png");
     }
 
     @Override
     public String getSkillId() {
         return skillId;
+    }
+
+    @Override
+    public ITextComponent getStats() {
+        return new StringTextComponent("");
     }
 }

@@ -3,6 +3,7 @@ package com.djb.martial_cultivation.network;
 import com.djb.martial_cultivation.Main;
 import com.djb.martial_cultivation.network.messages.LoadCultivator;
 import com.djb.martial_cultivation.network.messages.QiAmountChanged;
+import com.djb.martial_cultivation.network.messages.SaveCultivator;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.BiConsumer;
@@ -13,6 +14,7 @@ public class NetworkMessages {
     public static void registerMessages() {
         registerSerializableMessage(QiAmountChanged.class, QiAmountChanged::handleMessage);
         registerSerializableMessage(LoadCultivator.class, LoadCultivator::handleMessage);
+        registerSerializableMessage(SaveCultivator.class, SaveCultivator::handleMessage);
     }
 
     private static <MSG> void registerSerializableMessage(Class<MSG> messageClass, BiConsumer<MSG, Supplier<NetworkEvent.Context>> ctx) {

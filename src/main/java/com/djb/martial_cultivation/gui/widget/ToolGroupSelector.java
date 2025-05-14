@@ -1,39 +1,29 @@
 package com.djb.martial_cultivation.gui.widget;
 
 import com.djb.martial_cultivation.Main;
-import com.djb.martial_cultivation.items.ModItems;
+import com.djb.martial_cultivation.capabilities.skills.ToolSkillGroup;
+import com.djb.martial_cultivation.gui.renderer.ToolSkillGroupRenderer;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Consumer;
 
-public class ToolSelector extends Widget {
+public class ToolGroupSelector extends Widget {
     private static final ResourceLocation black_pixel = new ResourceLocation(Main.MOD_ID, "textures/black_pixel.png");
 
-    private final List<Item> tools = new ArrayList<Item>() {
-        { add(ModItems.BASIC_STAFF.get()); }
-        { add(Items.STONE_SWORD); }
-        { add(Items.IRON_AXE); }
-        { add(Items.STONE_PICKAXE); }
-        { add(Items.STONE_HOE); }
-    };
+    private final ToolSkillGroup[] toolSkillGroups = ToolSkillGroup.values();
 
     private final Minecraft mc;
-    private final Consumer<Item> itemConsumer;
+    private final Consumer<ToolSkillGroup> itemConsumer;
 
     private final int toolHeight = 18;
     private final int toolWidth = 18;
     private final int padding = 3;
 
-    public ToolSelector(Minecraft mc, int width, int height, int top, int left, Consumer<Item> itemConsumer) {
+    public ToolGroupSelector(Minecraft mc, int width, int height, int top, int left, Consumer<ToolSkillGroup> itemConsumer) {
         super(left, top, width, height, new StringTextComponent(""));
 
         this.mc = mc;
@@ -41,15 +31,20 @@ public class ToolSelector extends Widget {
     }
 
     @Override
-    public void render(MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         int currX = x;
         int currY = y;
         int rowItem = 0;
 
-        for (Item tool : this.tools) {
-            this.mc.getTextureManager().bindTexture(black_pixel);
-            this.mc.getItemRenderer().renderItemAndEffectIntoGUI(
-                    new ItemStack(tool), currX + padding, currY + padding);
+
+
+        for (int i = 0; i < this.toolSkillGroups.length; i++) {
+            ToolSkillGroupRenderer.RenderIconFor(
+                    this.toolSkillGroups[i],
+                    this,
+                    matrixStack,
+                    currX + padding,
+                    currY + padding);
 
             currX += toolWidth + padding;
             rowItem++;
@@ -62,7 +57,7 @@ public class ToolSelector extends Widget {
         }
     }
 
-    private Item findTool(final int mouseX, final int mouseY) {
+    private ToolSkillGroup findTool(final int mouseX, final int mouseY) {
         double yOffset = (mouseY - this.y);
         double xOffset = (mouseX - this.x);
 
@@ -74,10 +69,10 @@ public class ToolSelector extends Widget {
         int columnIndex = (int) (xOffset / (this.toolWidth + padding));
         int toolIndex = (rowIndex * 4) + columnIndex;
 
-        if (toolIndex >= this.tools.size() || toolIndex < 0)
+        if (toolIndex >= this.toolSkillGroups.length || toolIndex < 0)
             return null;
 
-        return this.tools.get(toolIndex);
+        return this.toolSkillGroups[toolIndex];
     }
 
     @Override

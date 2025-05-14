@@ -1,14 +1,16 @@
 package com.djb.martial_cultivation.gui.screen;
 
 import com.djb.martial_cultivation.Main;
+import com.djb.martial_cultivation.capabilities.skills.CultivationSkill;
+import com.djb.martial_cultivation.capabilities.skills.ToolSkillGroup;
+import com.djb.martial_cultivation.exceptions.SkillNotImplementedException;
 import com.djb.martial_cultivation.gui.widget.SkillSelector;
-import com.djb.martial_cultivation.gui.widget.ToolSelector;
+import com.djb.martial_cultivation.gui.widget.ToolGroupSelector;
+import com.djb.martial_cultivation.gui.widget.ToolSkillSettingsWidget;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -22,10 +24,10 @@ public class SkillScreen extends Screen {
     private final int screenWidth = 176;
     private final int screenHeight = 166;
 
-    private PlayerEntity player;
-    private Item selectedTool;
-    private ToolSelector toolSelector;
+    private CultivationSkill selectedSkill;
+    private ToolGroupSelector toolGroupSelector;
     private SkillSelector skillSelector;
+    private ToolSkillSettingsWidget toolSkillSettingsWidget;
 
     private int screenTop = 0;
     private int screenLeft = 0;
@@ -37,13 +39,12 @@ public class SkillScreen extends Screen {
     @Override
     protected void init() {
         this.minecraft = Minecraft.getInstance();
-        this.player = this.minecraft.player;
 
         assert this.minecraft.currentScreen != null;
         this.screenLeft = (this.minecraft.currentScreen.width - this.screenWidth) / 2;
         this.screenTop = (this.minecraft.currentScreen.height - this.screenHeight) / 2;
 
-        this.toolSelector = new ToolSelector(
+        this.toolGroupSelector = new ToolGroupSelector(
                 this.minecraft,
                 88,
                 56,
@@ -51,22 +52,50 @@ public class SkillScreen extends Screen {
                 this.screenLeft + (this.screenWidth / 2) - 11,
                 this::selectTool);
 
-        this.skillSelector = new SkillSelector(
-                this.minecraft,
-                this.screenLeft + 15,
-                this.screenTop + 100,
-                100,
-                88,
-                this.player);
+        try {
+            this.skillSelector = new SkillSelector(
+                    this.minecraft,
+                    this.screenLeft + 10,
+                    this.screenTop + 80,
+                    100,
+                    88,
+                    this.minecraft.player,
+                    this::selectSkill);
+        } catch (SkillNotImplementedException e) {
+            Main.LOGGER.error(e);
+        }
 
-        this.addListener(this.toolSelector);
-        this.addListener(this.skillSelector);
+        try {
+            this.toolSkillSettingsWidget = new ToolSkillSettingsWidget(
+                    this.minecraft,
+                    this.screenLeft + 6,
+                    this.screenTop + 6,
+                    this.minecraft.player);
+        } catch (SkillNotImplementedException e) {
+            Main.LOGGER.error(e);
+        }
+
+        this.addListener(this.toolGroupSelector);
+
+        for (IGuiEventListener listener: this.skillSelector.getNestedListeners()) {
+            this.addListener(listener);
+        }
+
+        this.addListener(this.toolSkillSettingsWidget);
     }
 
-    private void selectTool(Item tool) {
-        if (tool != null) {
-            Main.LOGGER.debug("Selected tool: " + tool.getTranslationKey());
-            this.selectedTool = tool;
+    private void selectTool(ToolSkillGroup toolSkillGroup) {
+        if (toolSkillGroup != null) {
+            Main.LOGGER.debug("Selected tool skill group: " + toolSkillGroup);
+            this.toolSkillSettingsWidget.setSelectedToolSkillGroup(toolSkillGroup);
+        }
+    }
+
+    private void selectSkill(CultivationSkill skill) {
+        if (skill != null) {
+            Main.LOGGER.debug("Selected skill: " + skill.getSkillId());
+            this.selectedSkill = skill;
+            this.toolSkillSettingsWidget.setSelectedSkill(skill);
         }
     }
 
@@ -81,15 +110,13 @@ public class SkillScreen extends Screen {
         this.blit(matrixStack, this.screenLeft, this.screenTop, 0, 0,
                 screenWidth, screenHeight);
 
-        this.minecraft.getItemRenderer().renderItemAndEffectIntoGUI(
-                new ItemStack(this.selectedTool),
-                this.screenLeft + 12,
-                this.screenTop + 13);
-
-        this.toolSelector.render(matrixStack, mouseX, mouseY, partialTicks);
+        this.toolGroupSelector.render(matrixStack, mouseX, mouseY, partialTicks);
         this.skillSelector.render(matrixStack, mouseX, mouseY, partialTicks);
+        this.toolSkillSettingsWidget.render(matrixStack, mouseX, mouseY, partialTicks);
 
         super.render(matrixStack, mouseX, mouseY, partialTicks);
+
+        renderForeground(matrixStack, mouseX, mouseY);
     }
 
     @Override
@@ -109,5 +136,23 @@ public class SkillScreen extends Screen {
         GL11.glColor4d(1, 1, 1,1);
         GL11.glDisable(GL11.GL_BLEND);
         GL11.glPopMatrix();
+    }
+
+    private void renderForeground(MatrixStack matrixStack, int mouseX, int mouseY) {
+        if (this.selectedSkill != null) {
+            GL11.glPushMatrix();
+
+            this.minecraft.getTextureManager().bindTexture(this.selectedSkill.getTextureLocation());
+            blit(matrixStack, mouseX - 9, mouseY - 9, 0, 0, 18, 18);
+
+            GL11.glPopMatrix();
+        }
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        this.selectedSkill = null;
+
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 }

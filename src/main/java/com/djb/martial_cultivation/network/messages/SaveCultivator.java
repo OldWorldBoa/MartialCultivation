@@ -9,22 +9,21 @@ import net.minecraftforge.fml.network.NetworkEvent;
 import java.io.Serializable;
 import java.util.function.Supplier;
 
-public class LoadCultivator implements Serializable {
+public class SaveCultivator implements Serializable {
     public int playerId;
-    public Cultivator savedCultivator;
+    public Cultivator cultivatorToSave;
 
-    public LoadCultivator(int playerId, Cultivator cultivator) {
+    public SaveCultivator(int playerId, Cultivator cultivatorToSave) {
         this.playerId = playerId;
-        this.savedCultivator = cultivator;
+        this.cultivatorToSave = cultivatorToSave;
     }
 
-    public static void handleMessage(LoadCultivator message, Supplier<NetworkEvent.Context> ctx) {
+    public static void handleMessage(SaveCultivator message, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
             try {
-                LoadCultivatorClientside(message);
+                SaveCultivatorServerSide(message);
             } catch (Exception e) {
-                assert Minecraft.getInstance().player != null;
-                Main.LOGGER.warn("Error loading cultivator sent by " + ctx.get().toString() +
+                Main.LOGGER.warn("Error saving cultivator sent by " + ctx.get().toString() +
                         " for " + Minecraft.getInstance().player.getScoreboardName() +
                         ". " + e.getMessage());
             }
@@ -33,16 +32,15 @@ public class LoadCultivator implements Serializable {
         ctx.get().setPacketHandled(true);
     }
 
-    private static void LoadCultivatorClientside(LoadCultivator message) {
+    private static void SaveCultivatorServerSide(SaveCultivator message) {
         PlayerEntity player = Minecraft.getInstance().player;
 
-        assert player != null;
         if(player.getEntityId() == message.playerId) {
             Cultivator cultivator = Cultivator.getCultivatorFrom(player);
 
-            cultivator.loadCultivator(message.savedCultivator);
+            cultivator.loadCultivator(message.cultivatorToSave);
 
-            Main.LOGGER.debug("Loading cultivator for " + player.getScoreboardName());
+            Main.LOGGER.debug("Saving cultivator " + player.getScoreboardName());
         }
     }
 }
