@@ -1,6 +1,8 @@
 package com.djb.martial_cultivation.gui.button;
 
 import com.djb.martial_cultivation.Main;
+import com.djb.martial_cultivation.containers.SkillContainer;
+import com.djb.martial_cultivation.gui.screen.SkillScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.button.ImageButton;
 import net.minecraft.util.ResourceLocation;
@@ -20,9 +22,10 @@ public class SkillButton extends ImageButton {
                 19,
                 skill_button,
                 (button) -> {
+                    Minecraft.getInstance().displayGuiScreen(new SkillScreen());
                     Main.LOGGER.info("Skill button pressed");
                 });
 
-        // Minecraft.getInstance().displayGuiScreen(new SkillScreen())
+        //
     }
 }

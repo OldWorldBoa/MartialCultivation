@@ -1,6 +1,7 @@
 package com.djb.martial_cultivation;
 
 import com.djb.martial_cultivation.blocks.ModBlocks;
+import com.djb.martial_cultivation.containers.ModContainers;
 import com.djb.martial_cultivation.items.ModItems;
 
 import net.minecraft.block.Block;
@@ -28,7 +29,7 @@ public class Registrar {
 		
 		ModItems.register();
 		ModBlocks.register();
-
+		ModContainers.register();
 
 		Main.LOGGER.debug("Done registering items and blocks.");
 	}

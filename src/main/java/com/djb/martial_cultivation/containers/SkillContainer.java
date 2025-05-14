@@ -11,15 +11,12 @@ public class SkillContainer extends Container {
 
     private PlayerEntity player;
     private PlayerInventory inventory;
-    private IItemHandler itemHandler;
-    private World world;
 
-    public SkillContainer(int windowId, World world, PlayerInventory inventory, PlayerEntity player) {
+    public SkillContainer(int windowId, PlayerEntity player) {
         super(ModContainers.SKILL_CONTAINER.get(), windowId);
 
         this.player = player;
-        this.world = world;
-        this.inventory = inventory;
+        this.inventory = player.inventory;
     }
 
     @Override

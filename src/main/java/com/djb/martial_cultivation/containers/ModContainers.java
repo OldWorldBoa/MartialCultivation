@@ -9,8 +9,8 @@ import net.minecraftforge.fml.RegistryObject;
 
 public class ModContainers {
     public static final RegistryObject<ContainerType<Container>> SKILL_CONTAINER =
-            Registrar.CONTAINERS.register(SkillContainer.name, () -> IForgeContainerType.create((windowId, inv, data) -> {
-                World world = inv.player.getEntityWorld();
-                return new SkillContainer(windowId, world, inv, inv.player);
-            }));
+            Registrar.CONTAINERS.register(SkillContainer.name, () -> IForgeContainerType.create(
+                    (windowId, inv, data) -> new SkillContainer(windowId, inv.player)));
+
+    public static void register() {}
 }
