@@ -41,6 +41,7 @@ public class Main
         ModCapabilities.register();
         NetworkMessages.registerMessages();
         Registrar.registerKeybindings();
+        Registrar.removeDefaultMouseBindings();
 
         LOGGER.info("Finished " + Main.MOD_ID + " preinit processing.");
     }
