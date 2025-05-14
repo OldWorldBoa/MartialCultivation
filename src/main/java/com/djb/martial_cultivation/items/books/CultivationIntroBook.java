@@ -1,7 +1,8 @@
 package com.djb.martial_cultivation.items.books;
 
+import com.djb.martial_cultivation.capabilities.Cultivator;
 import com.djb.martial_cultivation.data.ModTags;
-import com.djb.martial_cultivation.gui.screens.CultivationIntroBookScreen;
+import com.djb.martial_cultivation.gui.screen.CultivationIntroBookScreen;
 import com.djb.martial_cultivation.helpers.InventoryChangeTriggerHelpers;
 import com.djb.martial_cultivation.items.ModItems;
 import net.minecraft.client.Minecraft;
@@ -32,9 +33,10 @@ public class CultivationIntroBook extends BookItem {
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
-        Minecraft mc = Minecraft.getInstance();
+        Minecraft.getInstance().displayGuiScreen(new CultivationIntroBookScreen());
 
-        mc.displayGuiScreen(new CultivationIntroBookScreen());
+        Cultivator cultivator = Cultivator.getCultivatorFrom(playerIn);
+        cultivator.setEnabled(true);
 
         return super.onItemRightClick(worldIn, playerIn, handIn);
     }

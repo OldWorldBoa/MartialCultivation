@@ -1,4 +1,4 @@
-package com.djb.martial_cultivation.gui.screens;
+package com.djb.martial_cultivation.gui.screen;
 
 import com.djb.martial_cultivation.Main;
 import com.mojang.blaze3d.matrix.MatrixStack;

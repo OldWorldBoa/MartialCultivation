@@ -1,4 +1,4 @@
-package com.djb.martial_cultivation.data.network;
+package com.djb.martial_cultivation.network;
 
 import com.djb.martial_cultivation.Main;
 import net.minecraft.network.PacketBuffer;
@@ -21,7 +21,7 @@ public class SerializableMessageConverter {
 
                 objectString = Base64.getEncoder().encodeToString(baos.toByteArray());
             } catch (IOException e) {
-                Main.LOGGER.warn(e.getMessage());
+                Main.LOGGER.warn("Error serializing object: " + e.getMessage());
             }
 
             packetBuffer.writeString(objectString);
@@ -40,7 +40,7 @@ public class SerializableMessageConverter {
 
                 return (T)o;
             } catch (IOException | ClassNotFoundException e) {
-                Main.LOGGER.warn(e.getMessage());
+                Main.LOGGER.warn("Error deserializing object: " + e.getMessage());
             }
 
             return null;

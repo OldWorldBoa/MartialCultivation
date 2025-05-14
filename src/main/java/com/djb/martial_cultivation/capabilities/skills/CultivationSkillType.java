@@ -1,4 +1,4 @@
-package com.djb.martial_cultivation.capabilities.attributes;
+package com.djb.martial_cultivation.capabilities.skills;
 
 public enum CultivationSkillType {
     BASE,

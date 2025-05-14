@@ -1,6 +1,6 @@
 package com.djb.martial_cultivation.events.client;
 
-import com.djb.martial_cultivation.gui.client.QiIndicatorRenderer;
+import com.djb.martial_cultivation.gui.renderer.QiIndicatorRenderer;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;

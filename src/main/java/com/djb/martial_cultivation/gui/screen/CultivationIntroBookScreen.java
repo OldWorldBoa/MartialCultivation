@@ -1,4 +1,4 @@
-package com.djb.martial_cultivation.gui.screens;
+package com.djb.martial_cultivation.gui.screen;
 
 import com.djb.martial_cultivation.items.books.CultivationIntroBookContent;
 import net.minecraft.client.gui.screen.ReadBookScreen;

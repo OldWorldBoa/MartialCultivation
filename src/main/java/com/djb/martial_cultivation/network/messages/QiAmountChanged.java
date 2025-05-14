@@ -1,4 +1,4 @@
-package com.djb.martial_cultivation.data.network.messages;
+package com.djb.martial_cultivation.network.messages;
 
 import com.djb.martial_cultivation.Main;
 import com.djb.martial_cultivation.capabilities.Cultivator;

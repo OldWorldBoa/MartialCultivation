@@ -1,4 +1,4 @@
-package com.djb.martial_cultivation.gui.client;
+package com.djb.martial_cultivation.gui.renderer;
 
 import com.djb.martial_cultivation.Main;
 import com.djb.martial_cultivation.capabilities.Cultivator;
@@ -10,6 +10,7 @@ import net.minecraft.profiler.IProfiler;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.lwjgl.opengl.GL11;
 
 @OnlyIn(Dist.CLIENT)
 public class QiIndicatorRenderer {
@@ -24,16 +25,16 @@ public class QiIndicatorRenderer {
             mc.getTextureManager().bindTexture(qi_indicator);
 
             profiler.startSection("qi_indicator");
-            RenderSystem.pushMatrix();
+            GL11.glPushMatrix();
+            GL11.glScaled(0.3, 0.3, 0.3);
             RenderSystem.enableBlend();
-            RenderSystem.scalef(0.3f, 0.3f, 0.3f);
 
             int qiTextureSize = 129;
             double qiRemainingRatio = getRemainingQiRatio(player);
             mc.ingameGUI.blit(mStack, 50, 530, 0, 0, qiTextureSize, qiTextureSize);
             mc.ingameGUI.blit(mStack, 50, 530, qiTextureSize-2, 0, qiTextureSize, (int) Math.floor(qiTextureSize * qiRemainingRatio));
 
-            RenderSystem.popMatrix();
+            GL11.glPopMatrix();
             profiler.endSection();
         }
     }

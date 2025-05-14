@@ -1,18 +1,26 @@
 package com.djb.martial_cultivation.capabilities;
 
-import com.djb.martial_cultivation.capabilities.attributes.CultivationSkill;
+import com.djb.martial_cultivation.capabilities.skills.base.CultivationSkill;
 import com.djb.martial_cultivation.exceptions.NotEnoughQiException;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.INBTSerializable;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class FoundationCultivator implements Cultivator, INBTSerializable<CompoundNBT> {
+public class FoundationCultivator implements Cultivator, INBTSerializable<CompoundNBT>, Serializable {
     private int storedQi = 0;
     private int maxQi = 100;
     private boolean isEnabled = false;
 
     private ArrayList<CultivationSkill> cultivationAttributeList = new ArrayList();
+
+    @Override
+    public void loadCultivator(Cultivator savedCultivator) {
+        this.storedQi = savedCultivator.getStoredQi();
+        this.maxQi = savedCultivator.getMaxQi();
+        this.isEnabled = savedCultivator.isEnabled();
+    }
 
     @Override
     public void cultivate() {
@@ -57,6 +65,11 @@ public class FoundationCultivator implements Cultivator, INBTSerializable<Compou
     @Override
     public int getMaxQi() {
         return this.maxQi;
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        this.isEnabled = enabled;
     }
 
     @Override

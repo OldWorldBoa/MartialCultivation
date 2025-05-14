@@ -10,6 +10,8 @@ public interface Cultivator {
             .orElseThrow(IllegalStateException::new);
     }
 
+    void loadCultivator(Cultivator savedCultivator);
+
     void cultivate();
 
     void useQi(int qi) throws NotEnoughQiException;
@@ -19,5 +21,6 @@ public interface Cultivator {
     int getStoredQi();
     int getMaxQi();
 
+    void setEnabled(boolean enabled);
     boolean isEnabled();
 }
