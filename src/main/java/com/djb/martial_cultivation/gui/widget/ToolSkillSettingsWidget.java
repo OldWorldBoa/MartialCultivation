@@ -9,6 +9,7 @@ import com.djb.martial_cultivation.capabilities.skills.ToolSkillSettings;
 import com.djb.martial_cultivation.exceptions.SkillNotImplementedException;
 import com.djb.martial_cultivation.gui.renderer.ToolSkillGroupRenderer;
 import com.djb.martial_cultivation.helpers.StringHelpers;
+import com.djb.martial_cultivation.network.messages.SaveToolSkillSettings;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.Widget;
@@ -23,6 +24,7 @@ public class ToolSkillSettingsWidget extends Widget {
     private static final ResourceLocation tool_skill_settings = new ResourceLocation(Main.MOD_ID, "textures/gui/tool_skill_settings.png");
     private CultivationSkill selectedSkill;
     private ToolSkillSettings currentToolSkillSetting;
+    private final PlayerEntity player;
     private final Cultivator cultivator;
     private final Minecraft mc;
     private final IdentityHashMap<String, SkillContainer> skillContainers = new IdentityHashMap<>();
@@ -39,7 +41,8 @@ public class ToolSkillSettingsWidget extends Widget {
     public ToolSkillSettingsWidget(Minecraft mc, int x, int y, PlayerEntity player) throws SkillNotImplementedException {
         super(x, y, widgetWidth, widgetHeight, new StringTextComponent(" "));
 
-        cultivator = Cultivator.getCultivatorFrom(player);
+        this.player = player;
+        this.cultivator = Cultivator.getCultivatorFrom(player);
         this.mc = mc;
         this.currentToolSkillSetting = this.cultivator.getToolSkillSettings(ToolSkillGroup.UNARMED);
 
@@ -127,27 +130,37 @@ public class ToolSkillSettingsWidget extends Widget {
             Main.LOGGER.debug("Clicked on right click skill");
             this.currentToolSkillSetting.rightClickSkillId = this.selectedSkill.getSkillId();
             this.skillContainers.get(RIGHT_CLICK).setSkill(this.selectedSkill);
+            saveToolSkillSettings();
         } else if (isClickOnRightHoldSlot(relativeX, relativeY)) {
             Main.LOGGER.debug("Clicked on right hold skill");
             this.currentToolSkillSetting.rightHoldSkillId = this.selectedSkill.getSkillId();
             this.skillContainers.get(RIGHT_HOLD).setSkill(this.selectedSkill);
+            saveToolSkillSettings();
         } else if (isClickOnMiddleClickSlot(relativeX, relativeY)) {
             Main.LOGGER.debug("Clicked on middle click skill");
             this.currentToolSkillSetting.middleClickSkillId = this.selectedSkill.getSkillId();
             this.skillContainers.get(MIDDLE_CLICK).setSkill(this.selectedSkill);
+            saveToolSkillSettings();
         } else if (isClickOnLeftHoldSlot(relativeX, relativeY)) {
             Main.LOGGER.debug("Clicked on left hold skill");
             this.currentToolSkillSetting.leftHoldSkillId = this.selectedSkill.getSkillId();
             this.skillContainers.get(LEFT_HOLD).setSkill(this.selectedSkill);
+            saveToolSkillSettings();
         } else if (isClickOnLeftClickSlot(relativeX, relativeY)) {
             Main.LOGGER.debug("Clicked on left click skill");
             this.currentToolSkillSetting.leftClickSkillId = this.selectedSkill.getSkillId();
             this.skillContainers.get(LEFT_CLICK).setSkill(this.selectedSkill);
+            saveToolSkillSettings();
         }
 
         this.selectedSkill = null;
 
         return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    private void saveToolSkillSettings() {
+        Main.NETWORK_CHANNEL.sendToServer(
+            new SaveToolSkillSettings(this.player.getEntityId(), this.currentToolSkillSetting));
     }
 
     private boolean isClickInScreen(double relativeX, double relativeY) {

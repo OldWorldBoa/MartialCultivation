@@ -2,6 +2,7 @@ package com.djb.martial_cultivation.network.messages;
 
 import com.djb.martial_cultivation.Main;
 import com.djb.martial_cultivation.capabilities.Cultivator;
+import com.djb.martial_cultivation.capabilities.skills.ToolSkillSettings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -9,20 +10,21 @@ import net.minecraftforge.fml.network.NetworkEvent;
 import java.io.Serializable;
 import java.util.function.Supplier;
 
-public class SaveCultivator implements Serializable {
+public class SaveToolSkillSettings implements Serializable {
+    public ToolSkillSettings toolSkillSettings;
     public int playerId;
-    public Cultivator cultivatorToSave;
 
-    public SaveCultivator(int playerId, Cultivator cultivatorToSave) {
+    public SaveToolSkillSettings(int playerId, ToolSkillSettings toolSkillSettings) {
+        this.toolSkillSettings = toolSkillSettings;
         this.playerId = playerId;
-        this.cultivatorToSave = cultivatorToSave;
     }
 
-    public static void handleMessage(SaveCultivator message, Supplier<NetworkEvent.Context> ctx) {
+    public static void handleMessage(SaveToolSkillSettings message, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
             try {
-                SaveCultivatorServerSide(message);
+                SaveToolSkillSettingsServerSide(message);
             } catch (Exception e) {
+                assert Minecraft.getInstance().player != null;
                 Main.LOGGER.warn("Error saving cultivator sent by " + ctx.get().toString() +
                         " for " + Minecraft.getInstance().player.getScoreboardName() +
                         ". " + e.getMessage());
@@ -32,22 +34,22 @@ public class SaveCultivator implements Serializable {
         ctx.get().setPacketHandled(true);
     }
 
-    private static void SaveCultivatorServerSide(SaveCultivator message) {
+    private static void SaveToolSkillSettingsServerSide(SaveToolSkillSettings message) {
         PlayerEntity player = getServerPlayer(message.playerId);
 
         if(player.getEntityId() == message.playerId) {
             Cultivator cultivator = Cultivator.getCultivatorFrom(player);
+            cultivator.setToolSkillSettings(message.toolSkillSettings);
 
-            cultivator.loadCultivator(message.cultivatorToSave);
-
-            Main.LOGGER.debug("Saving cultivator " + player.getScoreboardName());
+            Main.LOGGER.debug("Saving " + message.toolSkillSettings.toolSkillGroup.toString() +
+                              " tool skill settings for " + player.getScoreboardName());
         }
     }
 
-    private static PlayerEntity getServerPlayer(int playerId) {
+    private static PlayerEntity getServerPlayer(int entityId) {
         return Minecraft.getInstance().getIntegratedServer()
                 .getPlayerList().getPlayers()
-                .stream().filter(x -> x.getEntityId() == playerId)
+                .stream().filter(x -> x.getEntityId() == entityId)
                 .findFirst().get();
     }
 }
