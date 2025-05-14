@@ -118,8 +118,19 @@ public class DoublePageBookScreen extends Screen {
     }
 
     private void updateButtons() {
-        this.buttonNextPage.visible = !(this.currContentNumber == this.getContentBook().getPageCount() - 1 &&
-                                        this.currFirstVirtualPage >= this.getNumVirtualPagesForCurrentContent() - 2);
+        this.buttonNextPage.visible = true;
+
+        if (this.currContentNumber == this.getContentBook().getPageCount() - 1 &&
+            this.currFirstVirtualPage >= this.getNumVirtualPagesForCurrentContent() - 2) {
+            // This is the last two virtual pages of the last chapter
+            this.buttonNextPage.visible = false;
+        } else if (this.currContentNumber == this.getContentBook().getPageCount() - 2 &&
+                   this.currFirstVirtualPage == this.getNumVirtualPagesForCurrentContent() - 1 &&
+                   this.getNumVirtualPagesForNextContent() == 1) {
+            // This is the second last chapter on the first page and the last chapter only has one page
+            this.buttonNextPage.visible = false;
+        }
+
         this.buttonPreviousPage.visible = !(this.currContentNumber == 0 && this.currFirstVirtualPage == 0);
     }
 
@@ -197,6 +208,10 @@ public class DoublePageBookScreen extends Screen {
         return (int)Math.ceil((this.getCurrContentCachedLines().size() / (float)this.maxLinesPerPage));
     }
 
+    private int getNumVirtualPagesForNextContent() {
+        return (int)Math.ceil((this.getNextContentCachedLines().size() / (float)this.maxLinesPerPage));
+    }
+
     private List<IReorderingProcessor> getCurrContentCachedLines() {
         if (this.currContentNumber != this.currCachedContentNumber) {
             ITextProperties itextproperties = this.getContentBook().func_230456_a_(this.currContentNumber);
@@ -210,6 +225,7 @@ public class DoublePageBookScreen extends Screen {
     private List<IReorderingProcessor> getNextContentCachedLines()
     {
         int nextContentNumber = this.currContentNumber + 1;
+
         if (nextContentNumber != this.nextCachedContentNumber &&
             nextContentNumber > -1 &&
             nextContentNumber < this.getContentBook().getPageCount()) {
@@ -217,10 +233,10 @@ public class DoublePageBookScreen extends Screen {
             ITextProperties itextproperties = this.getContentBook().func_230456_a_(nextContentNumber);
             this.nextContentCachedLines = this.font.trimStringToWidth(itextproperties, lineLength);
             this.nextCachedContentNumber = nextContentNumber;
+
+            return this.nextContentCachedLines;
         } else if (nextContentNumber == this.nextCachedContentNumber) {
             return this.nextContentCachedLines;
-        } else {
-            return new ArrayList<>();
         }
 
         return new ArrayList<>();
