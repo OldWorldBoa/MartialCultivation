@@ -38,6 +38,7 @@ public class SkillScreen extends Screen {
         this.minecraft = Minecraft.getInstance();
         this.player = this.minecraft.player;
 
+        assert this.minecraft.currentScreen != null;
         this.screenLeft = (this.minecraft.currentScreen.width - this.screenWidth) / 2;
         this.screenTop = (this.minecraft.currentScreen.height - this.screenHeight) / 2;
 
@@ -48,11 +49,15 @@ public class SkillScreen extends Screen {
                 this.screenTop + 11,
                 this.screenLeft + (this.screenWidth / 2) - 11,
                 this::selectTool);
+
+        this.addListener(this.toolSelector);
     }
 
     private void selectTool(Item tool) {
-        Main.LOGGER.debug("Selected tool: " + tool.getTranslationKey());
-        this.selectedTool = tool;
+        if (tool != null) {
+            Main.LOGGER.debug("Selected tool: " + tool.getTranslationKey());
+            this.selectedTool = tool;
+        }
     }
 
     @Override
@@ -77,7 +82,10 @@ public class SkillScreen extends Screen {
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GL11.glColor4d(1, 1, 1, 0.5);
 
+        assert this.minecraft != null;
         this.minecraft.getTextureManager().bindTexture(black_pixel);
+
+        assert this.minecraft.currentScreen != null;
         blit(matrixStack, 0, 0, 0, 0,
                 this.minecraft.currentScreen.width, this.minecraft.currentScreen.height);
 
