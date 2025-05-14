@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "martial_cultivation:item/qi_essence"
+  }
+}

@@ -21,6 +21,7 @@ run
 
 # Files from Forge MDK
 forge*changelog.txt
+*.launch
 
 # Created by https://www.gitignore.io/api/java,gradle
 ### Java ###

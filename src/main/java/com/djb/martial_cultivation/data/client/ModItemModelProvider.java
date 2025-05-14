@@ -1,10 +1,12 @@
 package com.djb.martial_cultivation.data.client;
 
 import com.djb.martial_cultivation.Main;
+import com.djb.martial_cultivation.blocks.materials.CondensedQi;
+import com.djb.martial_cultivation.items.materials.QiEssence;
+import com.djb.martial_cultivation.items.tools.combat.BasicStaff;
 
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
-import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class ModItemModelProvider extends ItemModelProvider {
@@ -14,12 +16,13 @@ public class ModItemModelProvider extends ItemModelProvider {
 
 	@Override
 	protected void registerModels() {
-		withExistingParent("condensed_qi", modLoc("block/condensed_qi"));
-		
-		build("basic_staff", getExistingFile(mcLoc("item/generated")));
+		withExistingParent(CondensedQi.name, modLoc("block/" + CondensedQi.name));
+
+		build(QiEssence.name);
+		build(BasicStaff.name);
 	}
 	
-	private void build(String name, ModelFile modFile) {
-		getBuilder(name).parent(modFile).texture("layer0", "item/" + name);
+	private void build(String name) {
+		getBuilder(name).parent(getExistingFile(mcLoc("item/generated"))).texture("layer0", "item/" + name);
 	}
 }

@@ -1,6 +1,8 @@
-package com.djb.martial_cultivation;
+package com.djb.martial_cultivation.blocks;
 
 import java.util.function.Supplier;
+
+import com.djb.martial_cultivation.Registrar;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -10,8 +12,8 @@ import net.minecraft.item.ItemGroup;
 import net.minecraftforge.fml.RegistryObject;
 
 public class ModBlocks {
-	public static final RegistryObject<Block> STAFF_DROP = registerNoItem("condensed_qi", () -> 
-		new Block(Block.Properties.create(Material.ROCK)));
+	public static final RegistryObject<Block> CONDENSED_QI = register("condensed_qi",
+			() -> new Block(Block.Properties.create(Material.ROCK)));
 	
 	public static void register() {}
 	
@@ -21,7 +23,7 @@ public class ModBlocks {
 	
 	private static <T extends Block> RegistryObject<T> register(String name, Supplier<T> block) {
 		RegistryObject<T> registeredBlock = registerNoItem(name, block);
-		Registrar.ITEMS.register(name, () -> new BlockItem(registeredBlock.get(), new Item.Properties().group(ItemGroup.COMBAT)));
+		Registrar.ITEMS.register(name, () -> new BlockItem(registeredBlock.get(), new Item.Properties().group(ItemGroup.BUILDING_BLOCKS)));
 		
 		return registeredBlock;
 	}
