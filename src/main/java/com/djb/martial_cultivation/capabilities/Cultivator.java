@@ -26,6 +26,11 @@ public interface Cultivator {
     int getStoredQi();
     int getMaxQi();
 
+    void toggleActiveCultivation();
+    boolean isEnteringCultivation();
+    boolean isExitingCultivation();
+    boolean isCultivating();
+
     void learnSkill(CultivationSkill skill);
     ArrayList<CultivationSkill> getSkills();
     void setToolSkillSettings(ToolSkillSettings toolSkillSettings);

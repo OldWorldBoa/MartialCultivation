@@ -40,6 +40,7 @@ public class Main
 
         ModCapabilities.register();
         NetworkMessages.registerMessages();
+        Registrar.registerKeybindings();
 
         LOGGER.info("Finished " + Main.MOD_ID + " preinit processing.");
     }

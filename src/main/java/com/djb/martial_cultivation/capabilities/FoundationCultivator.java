@@ -1,22 +1,33 @@
 package com.djb.martial_cultivation.capabilities;
 
+import com.djb.martial_cultivation.Main;
 import com.djb.martial_cultivation.capabilities.skills.CultivationSkill;
 import com.djb.martial_cultivation.capabilities.skills.ToolSkillGroup;
 import com.djb.martial_cultivation.capabilities.skills.ToolSkillSettings;
 import com.djb.martial_cultivation.exceptions.NotEnoughQiException;
 import com.djb.martial_cultivation.helpers.ListHelpers;
 import com.djb.martial_cultivation.helpers.SerializableConverter;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.settings.PointOfView;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.particles.ParticleTypes;
+import net.minecraft.util.MovementInput;
+import net.minecraft.util.MovementInputFromOptions;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class FoundationCultivator implements Cultivator, INBTSerializable<CompoundNBT>, Serializable {
     private int storedQi = 0;
     private int maxQi = 100;
     private boolean isEnabled = false;
+    private boolean isEnteringCultivation = false;
+    private boolean isInCultivation = false;
+    private boolean isExitingCultivation = false;
 
     private final ArrayList<CultivationSkill> learnedSkills;
     private final ArrayList<ToolSkillSettings> toolSkillSettings;
@@ -84,6 +95,112 @@ public class FoundationCultivator implements Cultivator, INBTSerializable<Compou
     }
 
     @Override
+    public void toggleActiveCultivation() {
+        if (!this.isEnteringCultivation && !this.isExitingCultivation) {
+            if (this.isInCultivation) {
+                this.exitCultivation();
+            } else {
+                this.enterCultivation();
+            }
+        }
+    }
+
+    @Override
+    public boolean isEnteringCultivation() {
+        return this.isEnteringCultivation;
+    }
+
+    @Override
+    public boolean isExitingCultivation() {
+        return this.isExitingCultivation;
+    }
+
+    @Override
+    public boolean isCultivating() {
+        return this.isInCultivation;
+    }
+
+    private void enterCultivation() {
+        Main.LOGGER.debug("Entering cultivation");
+        Minecraft mc = Minecraft.getInstance();
+        assert mc.player != null;
+        mc.player.sendChatMessage("Entering cultivation.");
+        this.isEnteringCultivation = true;
+
+        FoundationCultivator context = this;
+        new java.util.Timer().schedule(
+                new java.util.TimerTask() {
+                    @Override
+                    public void run() {
+                        mc.gameSettings.setPointOfView(PointOfView.THIRD_PERSON_FRONT);
+                        mc.player.movementInput = new MovementInput();
+
+                        Main.LOGGER.debug("Entered cultivation");
+                        mc.player.sendChatMessage("Entered cultivation.");
+                        context.isEnteringCultivation = false;
+                        context.isInCultivation = true;
+
+                        while (Cultivator.getCultivatorFrom(mc.player).isCultivating()) {
+                            addCultivationParticles(mc);
+
+                            try {
+                                Thread.sleep(150);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                },
+                1000
+        );
+    }
+
+    private void addCultivationParticles(Minecraft mc) {
+        Random rand = new Random();
+        BlockPos pos = mc.player.getPosition();
+        for(int i = -2; i <= 2; ++i) {
+            for(int j = -2; j <= 2; ++j) {
+                if (i > -2 && i < 2 && j == -1) {
+                    j = 2;
+                }
+
+                mc.world.addParticle(
+                        ParticleTypes.ENCHANT,
+                        pos.getX(),
+                        pos.getY() ,
+                        pos.getZ(),
+                        (double)((float)i + rand.nextFloat()) - 0.5D,
+                        (float)1 - rand.nextFloat() - 1.0F,
+                        (double)((float)j + rand.nextFloat()) - 0.5D);
+            }
+        }
+    }
+
+    private void exitCultivation() {
+        Main.LOGGER.debug("Exiting cultivation");
+        Minecraft.getInstance().player.sendChatMessage("Exiting cultivation.");
+        this.isExitingCultivation = true;
+
+        FoundationCultivator context = this;
+        new java.util.Timer().schedule(
+                new java.util.TimerTask() {
+                    @Override
+                    public void run() {
+                        Minecraft mc = Minecraft.getInstance();
+                        mc.gameSettings.setPointOfView(PointOfView.FIRST_PERSON);
+                        mc.player.movementInput = new MovementInputFromOptions(mc.gameSettings);
+
+                        Main.LOGGER.debug("Exited cultivation");
+                        Minecraft.getInstance().player.sendChatMessage("Exited cultivation.");
+                        context.isExitingCultivation = false;
+                        context.isInCultivation = false;
+                    }
+                },
+                1000
+        );
+    }
+
+    @Override
     public void learnSkill(CultivationSkill skill) {
         if (!this.learnedSkills.stream().anyMatch(x -> x.getSkillId() == skill.getSkillId())) {
             this.learnedSkills.add(skill);
@@ -136,6 +253,9 @@ public class FoundationCultivator implements Cultivator, INBTSerializable<Compou
         nbt.putInt("storedQi", this.storedQi);
         nbt.putInt("maxQi", this.maxQi);
         nbt.putBoolean("isEnabled", this.isEnabled);
+        nbt.putBoolean("isInCultivation", this.isInCultivation);
+        nbt.putBoolean("isEnteringCultivation", this.isEnteringCultivation);
+        nbt.putBoolean("isExitingCultivation", this.isExitingCultivation);
         nbt.putString("toolSkillSettings", SerializableConverter.Serialize(this.toolSkillSettings));
         nbt.putString("learnedSkills", SerializableConverter.Serialize(this.learnedSkills));
 
@@ -148,6 +268,9 @@ public class FoundationCultivator implements Cultivator, INBTSerializable<Compou
             this.storedQi = nbt.getInt("storedQi");
             this.maxQi = nbt.getInt("maxQi");
             this.isEnabled = nbt.getBoolean("isEnabled");
+            this.isInCultivation = nbt.getBoolean("isInCultivation");
+            this.isEnteringCultivation = nbt.getBoolean("isEnteringCultivation");
+            this.isExitingCultivation = nbt.getBoolean("isExitingCultivation");
 
             List<ToolSkillSettings> toolSkillSettings = SerializableConverter.Deserialize(nbt.getString("toolSkillSettings"));
             if (toolSkillSettings != null) {
