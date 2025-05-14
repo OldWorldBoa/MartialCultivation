@@ -8,6 +8,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -68,7 +69,13 @@ public class SkillScreen extends Screen {
         renderBackground(matrixStack);
 
         this.minecraft.getTextureManager().bindTexture(skill_screen);
-        this.blit(matrixStack, this.screenLeft, this.screenTop, 0, 0, screenWidth, screenHeight);
+        this.blit(matrixStack, this.screenLeft, this.screenTop, 0, 0,
+                screenWidth, screenHeight);
+
+        this.minecraft.getItemRenderer().renderItemAndEffectIntoGUI(
+                new ItemStack(this.selectedTool),
+                this.screenLeft + 12,
+                this.screenTop + 13);
 
         this.toolSelector.render(matrixStack, mouseX, mouseY, partialTicks);
 
