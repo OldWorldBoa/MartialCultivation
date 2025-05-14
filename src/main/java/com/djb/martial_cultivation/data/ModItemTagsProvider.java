@@ -5,7 +5,6 @@ import com.djb.martial_cultivation.items.ModItems;
 import net.minecraft.data.BlockTagsProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.ItemTagsProvider;
-import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 import javax.annotation.Nullable;
@@ -21,5 +20,6 @@ public class ModItemTagsProvider extends ItemTagsProvider {
 
         getOrCreateBuilder(ModTags.Items.BASIC_STAFF).add(ModItems.BASIC_STAFF.get());
         getOrCreateBuilder(ModTags.Items.QI_ESSENCE).add(ModItems.QI_ESSENCE.get());
+        getOrCreateBuilder(ModTags.Items.CULTIVATION_INTRO_BOOK).add(ModItems.CULTIVATION_INTRO_BOOK.get());
     }
 }

@@ -2,11 +2,9 @@ package com.djb.martial_cultivation.gui.client;
 
 import com.djb.martial_cultivation.Main;
 import com.djb.martial_cultivation.capabilities.Cultivator;
-import com.djb.martial_cultivation.capabilities.CultivatorCapabilityProvider;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.profiler.IProfiler;
 import net.minecraft.util.ResourceLocation;
@@ -14,9 +12,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class QiIndicatorRenderer extends ItemStackTileEntityRenderer {
+public class QiIndicatorRenderer {
     private final ResourceLocation qi_indicator = new ResourceLocation(Main.MOD_ID, "textures/gui/qi_indicator_4.png");
-    private Minecraft mc;
+    private final Minecraft mc;
 
     public QiIndicatorRenderer(Minecraft mc) {
         this.mc = mc;
@@ -31,30 +29,28 @@ public class QiIndicatorRenderer extends ItemStackTileEntityRenderer {
         RenderSystem.enableBlend();
         RenderSystem.scalef(0.3f, 0.3f, 0.3f);
 
-        int qi_texture_size = 129;
-        this.mc.ingameGUI.blit(mStack, 50, 530, 0, 0, qi_texture_size, qi_texture_size);
-        this.mc.ingameGUI.blit(mStack, 50, 530, qi_texture_size-2, 0, qi_texture_size, qi_texture_size);
+        int qiTextureSize = 129;
+        double qiRemainingRatio = getRemainingQiRatio();
+        this.mc.ingameGUI.blit(mStack, 50, 530, 0, 0, qiTextureSize, qiTextureSize);
+        this.mc.ingameGUI.blit(mStack, 50, 530, qiTextureSize-2, 0, qiTextureSize, (int) Math.floor(qiTextureSize * qiRemainingRatio));
 
         RenderSystem.popMatrix();
         profiler.endSection();
     }
 
-    private void getRemainingQiRatio() {
+    private double getRemainingQiRatio() {
         PlayerEntity player = (PlayerEntity)mc.getRenderViewEntity();
 
         try {
             assert player != null;
 
-            Cultivator cultivator = player
-                    .getCapability(CultivatorCapabilityProvider.capability)
-                    .orElseThrow(IllegalStateException::new);
+            Cultivator cultivator = Cultivator.getCultivatorFrom(player);
 
-            int qiRemaining = cultivator.getStoredQi();
-            int maxQi = cultivator.getMaxQi();
-
-            Main.LOGGER.debug("Getting remaining qi ratio for " + player.getScoreboardName());
+            return cultivator.getStoredQi()/(double)cultivator.getMaxQi();
         } catch (Exception e) {
-            Main.LOGGER.debug("Error getting qi ratio for " + player.getScoreboardName());
+            Main.LOGGER.warn("Error getting qi ratio for " + player.getScoreboardName());
         }
+
+        return 1;
     }
 }

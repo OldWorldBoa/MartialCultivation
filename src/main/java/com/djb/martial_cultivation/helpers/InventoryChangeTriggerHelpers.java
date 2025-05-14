@@ -24,6 +24,11 @@ public class InventoryChangeTriggerHelpers {
      * Creates a new {@link InventoryChangeTrigger} that checks for a player having a certain item.
      */
     public static InventoryChangeTrigger.Instance hasItem(ItemPredicate... predicate) {
-        return new InventoryChangeTrigger.Instance(EntityPredicate.AndPredicate.ANY_AND, MinMaxBounds.IntBound.UNBOUNDED, MinMaxBounds.IntBound.UNBOUNDED, MinMaxBounds.IntBound.UNBOUNDED, predicate);
+        return new InventoryChangeTrigger.Instance(
+            EntityPredicate.AndPredicate.ANY_AND,
+            MinMaxBounds.IntBound.UNBOUNDED,
+            MinMaxBounds.IntBound.UNBOUNDED,
+            MinMaxBounds.IntBound.UNBOUNDED,
+            predicate);
     }
 }

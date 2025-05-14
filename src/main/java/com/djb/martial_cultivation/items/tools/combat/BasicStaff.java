@@ -1,22 +1,17 @@
 package com.djb.martial_cultivation.items.tools.combat;
 
-import com.djb.martial_cultivation.Main;
-import com.djb.martial_cultivation.capabilities.Cultivator;
-import com.djb.martial_cultivation.capabilities.CultivatorCapabilityProvider;
-import com.djb.martial_cultivation.exceptions.NotEnoughQiException;
 import com.djb.martial_cultivation.helpers.InventoryChangeTriggerHelpers;
 import com.djb.martial_cultivation.items.ModItems;
 import net.minecraft.data.ShapedRecipeBuilder;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.*;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemTier;
+import net.minecraft.item.Items;
+import net.minecraft.item.SwordItem;
 
 public class BasicStaff extends SwordItem {
 	public static final String name = "basic_staff";
 
-	public static final ShapedRecipeBuilder getRecipeBuilder() {
+	public static ShapedRecipeBuilder getRecipeBuilder() {
 		return ShapedRecipeBuilder
 				.shapedRecipe(ModItems.BASIC_STAFF.get())
 				.key('/', Items.STICK)

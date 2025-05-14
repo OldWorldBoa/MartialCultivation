@@ -1,5 +1,12 @@
 {
 	"item.martial_cultivation.basic_staff": "Basic Staff",
-	"item.martial_cultivation.condensed_qi": "Condensed Qi",
-	"item.martial_cultivation.qi_essence": "Qi Essence"
+	"item.martial_cultivation.qi_essence": "Qi Essence",
+	"item.martial_cultivation.cultivation_intro_book": "Basic Cultivation Book",
+
+	"block.martial_cultivation.condensed_qi": "Condensed Qi",
+
+	"book.cultivation_intro_book.title": "The Guide to Cultivation",
+	"book.cultivation_intro_book.page_one": "Stepping on the path of cultivation is not for the faint of heart. It is full of trials and tribulations, and letting go of those things which are the toughest to let go of. If you still intend to become a cultivator, the first thing you'll need is a qi cultivation skill. Herein is one such skill. If you intend to become a cultivator of any note, you will undoubtedly replace this one with a more efficient method.",
+	"book.cultivation_intro_book.page_two": "Look at the indicator.",
+	"book.cultivation_intro_book.page_three": "<to do>"
 }

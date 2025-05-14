@@ -2,6 +2,7 @@ package com.djb.martial_cultivation.data.client;
 
 import com.djb.martial_cultivation.Main;
 import com.djb.martial_cultivation.blocks.materials.CondensedQi;
+import com.djb.martial_cultivation.items.books.CultivationIntroBook;
 import com.djb.martial_cultivation.items.materials.QiEssence;
 import com.djb.martial_cultivation.items.tools.combat.BasicStaff;
 
@@ -20,6 +21,7 @@ public class ModItemModelProvider extends ItemModelProvider {
 
 		build(QiEssence.name);
 		build(BasicStaff.name);
+		build(CultivationIntroBook.name);
 	}
 	
 	private void build(String name) {

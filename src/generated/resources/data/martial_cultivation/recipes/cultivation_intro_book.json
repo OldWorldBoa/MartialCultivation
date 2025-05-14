@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "tag": "forge:cultivation/qi_essence"
+    },
+    {
+      "item": "minecraft:book"
+    }
+  ],
+  "result": {
+    "item": "martial_cultivation:cultivation_intro_book"
+  }
+}

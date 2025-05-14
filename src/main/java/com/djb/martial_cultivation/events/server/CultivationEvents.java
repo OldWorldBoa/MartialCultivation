@@ -38,7 +38,7 @@ public class CultivationEvents {
 
                 Main.LOGGER.debug("Storing qi for " + player.getScoreboardName() + ". Current qi:" + cultivator.getStoredQi());
         } catch (Exception e) {
-            Main.LOGGER.debug("Error storing qi for " + player.getScoreboardName());
+            Main.LOGGER.warn("Error storing qi for " + player.getScoreboardName());
         }
     }
 }

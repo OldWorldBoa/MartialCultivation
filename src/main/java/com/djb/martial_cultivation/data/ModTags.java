@@ -27,6 +27,7 @@ public class ModTags {
 
         public static final ITag.INamedTag<Item> BASIC_STAFF = forge("weapons/basic_staff");
         public static final ITag.INamedTag<Item> QI_ESSENCE = forge("cultivation/qi_essence");
+        public static final ITag.INamedTag<Item> CULTIVATION_INTRO_BOOK = forge("cultivation/cultivation_intro_book");
 
         private static ITag.INamedTag<Item> forge(String path) {
             return ItemTags.makeWrapperTag(new ResourceLocation("forge", path).toString());

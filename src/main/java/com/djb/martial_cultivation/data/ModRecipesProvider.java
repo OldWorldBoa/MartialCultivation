@@ -1,5 +1,6 @@
 package com.djb.martial_cultivation.data;
 
+import com.djb.martial_cultivation.items.books.CultivationIntroBook;
 import com.djb.martial_cultivation.items.tools.combat.BasicStaff;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.IFinishedRecipe;
@@ -15,5 +16,6 @@ public class ModRecipesProvider extends RecipeProvider {
     @Override
     protected void registerRecipes(Consumer<IFinishedRecipe> consumer) {
         BasicStaff.getRecipeBuilder().build(consumer);
+        CultivationIntroBook.getRecipeBuilder().build(consumer);
     }
 }

@@ -1,12 +1,17 @@
 package com.djb.martial_cultivation.capabilities;
 
+import com.djb.martial_cultivation.capabilities.attributes.CultivationAttribute;
 import com.djb.martial_cultivation.exceptions.NotEnoughQiException;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.INBTSerializable;
 
+import java.util.ArrayList;
+
 public class FoundationCultivator implements Cultivator, INBTSerializable<CompoundNBT> {
     private int storedQi = 0;
     private int maxQi = 100;
+
+    private ArrayList<CultivationAttribute> cultivationAttributeList = new ArrayList();
 
     @Override
     public void storeQi(int qi) {
