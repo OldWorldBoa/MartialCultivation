@@ -1,6 +1,5 @@
 package com.djb.martial_cultivation.capabilities.attributes;
 
-public class CultivationAttribute {
-
+public class CultivationSkill {
 
 }

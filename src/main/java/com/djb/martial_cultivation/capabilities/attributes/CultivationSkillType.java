@@ -1,6 +1,6 @@
 package com.djb.martial_cultivation.capabilities.attributes;
 
-public enum CultivationAttributeType {
+public enum CultivationSkillType {
     BASE,
     TIGER,
     SNAKE,

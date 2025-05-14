@@ -10,10 +10,14 @@ public interface Cultivator {
             .orElseThrow(IllegalStateException::new);
     }
 
-    void storeQi(int qi);
     void cultivate();
+
     void useQi(int qi) throws NotEnoughQiException;
     void setQi(int qi);
+    void regenerateQi();
+
     int getStoredQi();
     int getMaxQi();
+
+    boolean isEnabled();
 }

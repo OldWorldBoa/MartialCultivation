@@ -30,7 +30,7 @@ public class CultivationEvents {
         try {
                 Cultivator cultivator = Cultivator.getCultivatorFrom(player);
 
-                cultivator.storeQi(5);
+                cultivator.regenerateQi();
 
                 Main.NETWORK_CHANNEL.send(
                         PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) player),

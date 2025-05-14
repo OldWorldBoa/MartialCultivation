@@ -5,8 +5,14 @@
 
 	"block.martial_cultivation.condensed_qi": "Condensed Qi",
 
-	"book.cultivation_intro_book.title": "The Guide to Cultivation",
-	"book.cultivation_intro_book.page_one": "Stepping on the path of cultivation is not for the faint of heart. It is full of trials and tribulations, and letting go of those things which are the toughest to let go of. If you still intend to become a cultivator, the first thing you'll need is a qi cultivation skill. Herein is one such skill. If you intend to become a cultivator of any note, you will undoubtedly replace this one with a more efficient method.",
-	"book.cultivation_intro_book.page_two": "Look at the indicator.",
-	"book.cultivation_intro_book.page_three": "<to do>"
+	"book.martial_cultivation.chapter_indicator": "Chapter %d of %d",
+
+	"book.cultivation_intro_book.title_0": "Starting Cultivation",
+	"book.cultivation_intro_book.content_0": "Stepping on the path of cultivation is not for the faint of heart. It is full of trials and tribulations, and letting go of those things which are the toughest to let go of. If you still intend to become a cultivator, the first thing you'll need is a qi cultivation skill. Herein is one such skill. If you intend to become a cultivator of any note, you will undoubtedly replace this one with a more efficient method.Cras eget est sed dolor semper commodo. Donec volutpat sed nibh et hendrerit. Phasellus fermentum mi et pellentesque scelerisque. In efficitur mi id pellentesque congue. Donec nec magna est. Fusce non mi sit amet orci tempor vulputate. Nunc ornare sollicitudin leo, ut ornare libero. Donec interdum elit at risus aliquam scelerisque. Sed est ipsum, maximus eget arcu id, pharetra semper magna. Pellentesque et varius purus.",
+
+	"book.cultivation_intro_book.title_1": "",
+	"book.cultivation_intro_book.content_1": "Look at the indicator.",
+
+	"book.cultivation_intro_book.title_2": "",
+	"book.cultivation_intro_book.content_2": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi congue nec tortor et porttitor. Suspendisse tincidunt est scelerisque sem euismod volutpat. Maecenas tincidunt tortor sit amet turpis posuere pulvinar. Mauris pretium, nulla a imperdiet iaculis, metus risus sollicitudin neque, id cursus arcu lacus quis mauris. Vestibulum nec venenatis ante, eu aliquam dolor. Pellentesque porta vitae augue eu sollicitudin. Morbi id ullamcorper turpis. Vivamus tincidunt lacus vel massa bibendum, in tempor ex aliquet. Quisque arcu mauris, varius sed suscipit id, tempor ut eros. Donec varius metus pellentesque dolor viverra varius. Etiam facilisis, libero non mollis molestie, dui odio accumsan elit, sed hendrerit erat massa sed velit. Donec vel eleifend lectus."
 }
