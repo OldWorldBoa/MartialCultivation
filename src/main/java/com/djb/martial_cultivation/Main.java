@@ -2,9 +2,7 @@ package com.djb.martial_cultivation;
 
 import com.djb.martial_cultivation.capabilities.ModCapabilities;
 import com.djb.martial_cultivation.data.network.NetworkMessages;
-import com.djb.martial_cultivation.events.CultivationEvents;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;

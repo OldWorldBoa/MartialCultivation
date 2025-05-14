@@ -1,8 +1,15 @@
 package com.djb.martial_cultivation.capabilities;
 
 import com.djb.martial_cultivation.exceptions.NotEnoughQiException;
+import net.minecraft.entity.player.PlayerEntity;
 
 public interface Cultivator {
+    static Cultivator getCultivatorFrom(PlayerEntity player) {
+        return player
+            .getCapability(CultivatorCapabilityProvider.capability)
+            .orElseThrow(IllegalStateException::new);
+    }
+
     void storeQi(int qi);
     void cultivate();
     void useQi(int qi) throws NotEnoughQiException;
