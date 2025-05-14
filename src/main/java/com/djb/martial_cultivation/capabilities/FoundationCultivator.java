@@ -7,6 +7,7 @@ import com.djb.martial_cultivation.capabilities.skills.ToolSkillSettings;
 import com.djb.martial_cultivation.exceptions.NotEnoughQiException;
 import com.djb.martial_cultivation.helpers.ListHelpers;
 import com.djb.martial_cultivation.helpers.SerializableConverter;
+import com.djb.martial_cultivation.network.messages.SaveCultivationState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.PointOfView;
 import net.minecraft.nbt.CompoundNBT;
@@ -47,6 +48,11 @@ public class FoundationCultivator implements Cultivator, INBTSerializable<Compou
         if(savedCultivator.getAllToolSkillSettings() != null) {
             this.toolSkillSettings.addAll(savedCultivator.getAllToolSkillSettings());
         }
+    }
+
+    @Override
+    public void setIsCultivating(boolean isCultivating) {
+        this.isInCultivation = isCultivating;
     }
 
     @Override
@@ -132,6 +138,10 @@ public class FoundationCultivator implements Cultivator, INBTSerializable<Compou
                 new java.util.TimerTask() {
                     @Override
                     public void run() {
+                        Main.NETWORK_CHANNEL.sendToServer(new SaveCultivationState(
+                                mc.player.getEntityId(),
+                                true));
+
                         mc.gameSettings.setPointOfView(PointOfView.THIRD_PERSON_FRONT);
                         mc.player.movementInput = new MovementInput();
 
@@ -166,8 +176,8 @@ public class FoundationCultivator implements Cultivator, INBTSerializable<Compou
 
                 mc.world.addParticle(
                         ParticleTypes.ENCHANT,
-                        pos.getX(),
-                        pos.getY() ,
+                        pos.getX() + 0.5,
+                        pos.getY() + 2,
                         pos.getZ(),
                         (double)((float)i + rand.nextFloat()) - 0.5D,
                         (float)1 - rand.nextFloat() - 1.0F,
@@ -178,7 +188,8 @@ public class FoundationCultivator implements Cultivator, INBTSerializable<Compou
 
     private void exitCultivation() {
         Main.LOGGER.debug("Exiting cultivation");
-        Minecraft.getInstance().player.sendChatMessage("Exiting cultivation.");
+        Minecraft mc = Minecraft.getInstance();
+        mc.player.sendChatMessage("Exiting cultivation.");
         this.isExitingCultivation = true;
 
         FoundationCultivator context = this;
@@ -186,7 +197,10 @@ public class FoundationCultivator implements Cultivator, INBTSerializable<Compou
                 new java.util.TimerTask() {
                     @Override
                     public void run() {
-                        Minecraft mc = Minecraft.getInstance();
+                        Main.NETWORK_CHANNEL.sendToServer(new SaveCultivationState(
+                                mc.player.getEntityId(),
+                                false));
+
                         mc.gameSettings.setPointOfView(PointOfView.FIRST_PERSON);
                         mc.player.movementInput = new MovementInputFromOptions(mc.gameSettings);
 

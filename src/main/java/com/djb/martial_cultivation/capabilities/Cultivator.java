@@ -17,6 +17,7 @@ public interface Cultivator {
 
     void loadCultivator(Cultivator savedCultivator);
 
+    void setIsCultivating(boolean isCultivating);
     void cultivate();
 
     void useQi(int qi) throws NotEnoughQiException;

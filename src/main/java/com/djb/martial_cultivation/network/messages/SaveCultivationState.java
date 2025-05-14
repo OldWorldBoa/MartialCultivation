@@ -6,18 +6,18 @@ import net.minecraft.entity.player.PlayerEntity;
 
 import java.io.Serializable;
 
-public class SaveCultivator extends NetworkMessage implements Serializable {
-    public int playerId;
-    public Cultivator cultivatorToSave;
+public class SaveCultivationState extends NetworkMessage implements Serializable {
+    int playerId;
+    boolean isCultivating;
 
-    public SaveCultivator(int playerId, Cultivator cultivatorToSave) {
+    public SaveCultivationState(int playerId, boolean isCultivating) {
         this.playerId = playerId;
-        this.cultivatorToSave = cultivatorToSave;
+        this.isCultivating = isCultivating;
     }
 
     @Override
     public String getErrorMessage() {
-        return "Error saving cultivator for " + this.playerId;
+        return "Error saving cultivation state " + this.isCultivating + " for " + this.playerId;
     }
 
     @Override
@@ -26,10 +26,11 @@ public class SaveCultivator extends NetworkMessage implements Serializable {
 
         if(player.getEntityId() == this.playerId) {
             Cultivator cultivator = Cultivator.getCultivatorFrom(player);
+            cultivator.setIsCultivating(this.isCultivating);
 
-            cultivator.loadCultivator(this.cultivatorToSave);
-
-            Main.LOGGER.debug("Saving cultivator " + player.getScoreboardName());
+            Main.LOGGER.debug(
+                    "Saving cultivation state " + this.isCultivating +
+                    " on server for " + player.getScoreboardName());
         }
     }
 }

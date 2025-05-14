@@ -3,6 +3,7 @@ package com.djb.martial_cultivation.events.server;
 import com.djb.martial_cultivation.Main;
 import com.djb.martial_cultivation.capabilities.Cultivator;
 import com.djb.martial_cultivation.network.messages.LoadCultivator;
+import com.djb.martial_cultivation.network.messages.MirrorCultivation;
 import com.djb.martial_cultivation.network.messages.QiAmountChanged;
 import com.djb.martial_cultivation.network.messages.SaveCultivator;
 import net.minecraft.entity.player.PlayerEntity;
@@ -37,29 +38,49 @@ public class CultivationEvents {
     }
 
     @SubscribeEvent
-    public static void regenerateQi(TickEvent.PlayerTickEvent event) {
+    public static void DistributeCultivationEvents(TickEvent.PlayerTickEvent event) {
         if (event.phase == TickEvent.Phase.START && event.side == LogicalSide.SERVER) {
             tickCount += 1;
 
             if (tickCount % 20 == 0) {
-                TryStoreQi(event.player);
+                RouteCultivationEvents(event.player);
             }
         }
     }
 
-    private static void TryStoreQi(PlayerEntity player) {
+    private static void RouteCultivationEvents(PlayerEntity player) {
         try {
-                Cultivator cultivator = Cultivator.getCultivatorFrom(player);
+            Cultivator cultivator = Cultivator.getCultivatorFrom(player);
 
-                cultivator.regenerateQi();
-
-                Main.NETWORK_CHANNEL.send(
-                        PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) player),
-                        new QiAmountChanged(cultivator.getStoredQi(), player.getEntityId()));
-
-                Main.LOGGER.debug("Storing qi for " + player.getScoreboardName() + ". Current qi:" + cultivator.getStoredQi());
+            if (!cultivator.isCultivating()) {
+                ProcessQiRegeneration(player);
+            } else {
+                ProcessCultivation(player);
+            }
         } catch (Exception e) {
             Main.LOGGER.warn("Error storing qi for " + player.getScoreboardName());
         }
+    }
+
+    private static void ProcessQiRegeneration(PlayerEntity player) {
+        Cultivator cultivator = Cultivator.getCultivatorFrom(player);
+        cultivator.regenerateQi();
+
+        Main.NETWORK_CHANNEL.send(
+                PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) player),
+                new QiAmountChanged(cultivator.getStoredQi(), player.getEntityId()));
+
+        Main.LOGGER.debug("Storing qi for " + player.getScoreboardName() + ". Current qi:" + cultivator.getStoredQi());
+    }
+
+    private static void ProcessCultivation(PlayerEntity player) {
+        Cultivator cultivator = Cultivator.getCultivatorFrom(player);
+        cultivator.cultivate();
+
+        Main.NETWORK_CHANNEL.send(
+                PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) player),
+                new MirrorCultivation(player.getEntityId()));
+
+        Main.LOGGER.debug(player.getScoreboardName() + " is cultivating");
     }
 }

@@ -4,14 +4,10 @@ import com.djb.martial_cultivation.Main;
 import com.djb.martial_cultivation.capabilities.Cultivator;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.io.Serializable;
-import java.util.function.Supplier;
 
-public class QiAmountChanged implements Serializable {
-    private final static long serialVersionUID = 1;
-
+public class QiAmountChanged extends NetworkMessage implements Serializable {
     public int qiAmount;
     public int playerId;
 
@@ -21,27 +17,21 @@ public class QiAmountChanged implements Serializable {
         this.playerId = playerId;
     }
 
-    public static void handleMessage(QiAmountChanged message, Supplier<NetworkEvent.Context> ctx) {
-        ctx.get().enqueueWork(() -> TrySetQiForPlayer(message, ctx));
-
-        ctx.get().setPacketHandled(true);
+    @Override
+    public String getErrorMessage() {
+        return "Error setting qi amount for " + this.playerId;
     }
 
-    private static void TrySetQiForPlayer(QiAmountChanged message, Supplier<NetworkEvent.Context> ctx) {
+    @Override
+    public void handleSelf() {
         PlayerEntity player = Minecraft.getInstance().player;
 
-        try {
-            if(player.getEntityId() == message.playerId) {
-                Cultivator cultivator = Cultivator.getCultivatorFrom(player);
+        if(player.getEntityId() == this.playerId) {
+            Cultivator cultivator = Cultivator.getCultivatorFrom(player);
 
-                cultivator.setQi(message.qiAmount);
+            cultivator.setQi(this.qiAmount);
 
-                Main.LOGGER.debug("Setting qi for " + player.getScoreboardName() + " to " + message.qiAmount);
-            }
-        } catch (Exception e) {
-            Main.LOGGER.warn("Error setting qi sent by " + ctx.get().toString() +
-                             " to " + message.qiAmount + " for " + player.getScoreboardName() +
-                             ". " + e.getMessage());
+            Main.LOGGER.debug("Setting qi for " + player.getScoreboardName() + " to " + this.qiAmount);
         }
     }
 }

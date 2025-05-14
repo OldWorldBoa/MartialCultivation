@@ -7,31 +7,27 @@ import net.minecraft.entity.player.PlayerEntity;
 
 import java.io.Serializable;
 
-public class LoadCultivator extends NetworkMessage implements Serializable {
-    public int playerId;
-    public Cultivator savedCultivator;
+public class MirrorCultivation extends NetworkMessage implements Serializable {
+    int playerId;
 
-    public LoadCultivator(int playerId, Cultivator cultivator) {
+    public MirrorCultivation(int playerId) {
         this.playerId = playerId;
-        this.savedCultivator = cultivator;
     }
 
     @Override
     public String getErrorMessage() {
-        return "Error loading cultivator for " + this.playerId;
+        return "Unable to cultivate for " + this.playerId;
     }
 
     @Override
     public void handleSelf() {
         PlayerEntity player = Minecraft.getInstance().player;
 
-        assert player != null;
-        if(player.getEntityId() == this.playerId) {
+        if (player.getEntityId() == this.playerId) {
             Cultivator cultivator = Cultivator.getCultivatorFrom(player);
+            cultivator.cultivate();
 
-            cultivator.loadCultivator(this.savedCultivator);
-
-            Main.LOGGER.debug("Loading cultivator for " + player.getScoreboardName());
+            Main.LOGGER.debug("Cultivate on client side for " + player.getScoreboardName());
         }
     }
 }
